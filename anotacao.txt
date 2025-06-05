@@ -1,0 +1,11 @@
+para criar projeto: npx create-expo-app escalas_hospitalares_end -t
+- cd escalas_hospitalares_end
+- npm run android
+- npm run ios # you need to use macOS to build the iOS project - use the Expo app if you need to do iOS development without a Mac
+- npm run web
+
+OBS:  ls - ajuda a ver qual pasta você está
+
+ctrl + c = para a aplicação
+npm run start = ele volta a rodar|
+ctrl + s = salva o aplicativo, e desta forma atualiza direto na tela
