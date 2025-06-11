@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text,  ScrollView,  SafeAreaView,  Button } from 'react-native';
 import styles from './rass_style'
 import { Picker } from '@react-native-picker/picker';
-
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import { Alert } from 'react-native';
 
 export default function RASSScaleApp() {
   const [rassScore, setRassScore] = useState(0);
@@ -28,10 +25,43 @@ export default function RASSScaleApp() {
     }
   };
 
+  const generatePDF = async () => {
+    try {
+      const html = `
+        <html>
+          <body>
+            <h1>Escala RASS - Escala de Agitação-Sedação de Richmond</h1>
+            <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+            <h2>Resultados</h2>
+            <p><strong>Resultado:</strong> ${rassScore}</p>
+            <p><strong>Interpretação:</strong> ${getInterpretation()}</p>
+          </body>
+        </html>
+      `;
+  
+      const { uri } = await Print.printToFileAsync({ html });
+  
+      console.log('PDF URI:', uri);
+  
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Compartilhar PDF',
+        });
+      } else {
+        Alert.alert('Compartilhamento não disponível neste dispositivo');
+      }
+  
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+      console.error('Erro ao gerar PDF:', error);
+    }
+  };  
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <SafeAreaView style={styles.container}>
-        <Text style={styles.title}>Escala RASS</Text>
+        <Text style={styles.title}>Escala RASS</Text> 
         <Text style={styles.subtitle}>Escala de Agitação-Sedação de Richmond</Text>
 
         <View style={styles.section}>
@@ -76,7 +106,7 @@ export default function RASSScaleApp() {
             color="#4CAF50"
           />
         </View>
-        
+
         <View>
           <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
           <Text style={styles.infoText1}>

@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
+import {  View,   Text,  ScrollView, SafeAreaView, Button } from 'react-native';
 import styles from './mrc_style'
 import { Picker } from '@react-native-picker/picker';
-
+import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 
 export default function MRCScaleApp() {
   // Estados para cada componente
@@ -59,6 +56,54 @@ export default function MRCScaleApp() {
     if (MRCScore <= 60) return '🟢 Paciente NÃO APRESENTA fraqueza muscular';
     return '❓ Fora da escala';
   };
+
+  
+    const generatePDF = async () => {
+      try {
+        const html = `
+          <html>
+            <body>
+              <h1>Escala de MCR</h1>
+              <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+              <h2>Resultados</h2>
+              <p><strong>Flexao de Ombro Direito:</strong> ${flexaoOmbroDir}</p>
+              <p><strong>Flexao de Ombro Esquerdo:</strong> ${flexaoOmbroEsq}</p>
+              <p><strong>Flexao de Cotovelo Direito:</strong> ${cotoveloDir}</p>
+              <p><strong>Flexao de Cotovelo Esquerdo:</strong> ${cotoveloEsq}</p>
+              <p><strong>Flexao de Punho Direito:</strong> ${punhoDir}</p>
+              <p><strong>Flexao de Punho Esquerdo:</strong> ${punhoEsq}</p>
+              <p><strong>Flexao de Quadril Direito:</strong> ${quadrilDir}</p>
+              <p><strong>Flexao de Quadril Esquerdo:</strong> ${quadrilEsq}</p>
+              <p><strong>Extensão de Joelho Direito:</strong> ${joelholDir}</p>
+              <p><strong>Extensão de Joelho Esquerdo:</strong> ${joelhoEsq}</p>
+              <p><strong>Flexao de Tornozelo Direito:</strong> ${tornozeloDir}</p>
+              <p><strong>Flexao de Tornozelo Esquerdo:</strong> ${tornozeloEsq}</p>
+              <p><strong>Score Total:</strong> ${MRCScore}</p>
+              <p><strong>Interpretação:</strong> ${getInterpretation()}</p>
+            </body>
+          </html>
+        `;
+    
+        const { uri } = await Print.printToFileAsync({ html }); // função do módulo expo-print, que renderiza HTML e gera um arquivo .pdf. - uri: é o caminho do pdf.
+    
+        console.log('PDF URI:', uri);
+    
+        if (await Sharing.isAvailableAsync()) { // verifica se o sistema operacional oferece suporte
+          await Sharing.shareAsync(uri, { // Sharing.isAvailableAsync() retorna uma Promise que resulta em true ou false.
+            mimeType: 'application/pdf', // define o tipo de arquivo
+            dialogTitle: 'Compartilhar PDF', // TÍTULO DA janela
+          });
+        } else {
+          Alert.alert('Compartilhamento não disponível neste dispositivo');
+        }
+    
+      } catch (error) {
+        Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+        console.error('Erro ao gerar PDF:', error);
+      }
+    };  
+      
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -377,7 +422,14 @@ export default function MRCScaleApp() {
           <Text style={styles.interpretationText}>{getInterpretation()}</Text>
         </View>
 
-       
+       {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
+        </View>
 
         <View>
         <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
@@ -391,6 +443,7 @@ export default function MRCScaleApp() {
         - 3 – Movimentação contra a gravidade, sem resistência adicional.{"\n"}
         - 4 – Força suficiente para resistir à pressão moderada.{"\n"}
         - 5 – Força muscular normal, capaz de suportar resistência máxima.{"\n"}
+        Se o paciente apresentar valores abaixo de 48, caracteriza que o mesmo apresenta fraqueza muscular, e se for acima está com a força preservada.
         Essa escala é essencial para monitorar alterações na força muscular, permitindo ajustes na reabilitação e nos tratamentos de pacientes com comprometimentos neuromusculares.
         </Text>
       </View>

@@ -11,8 +11,11 @@
 
 
 import React, { useState } from 'react';
-import { View, ScrollView, SafeAreaView, Text, TouchableOpacity } from 'react-native';
+import { View, ScrollView, SafeAreaView, Text, Button, TouchableOpacity } from 'react-native';
 import styles from './wexler_style';
+import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 
 export default function WexlerScaleApp() {
   const [selectedValue, setSelectedValue] = useState(null);
@@ -25,6 +28,38 @@ export default function WexlerScaleApp() {
     { id: 4, label: "+4 - Hiperreflexia com clônus transitório - Forte contração, com 1 a 3 clônus. Possível irradiação contralateral" },
     { id: 5, label: "+5 - Hiperreflexia com clônus sustentado - Forte contração e clônus sustentado." },
   ];
+
+  const generatePDF = async () => {
+    try {
+      const html = `
+        <html>
+          <body>
+            <h1>Escala de Wexler</h1>
+            <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+            <h2>Resultados</h2>
+            <p><strong>Resultado da Escala:</strong> ${options[selectedValue].label}</p>
+          </body>
+        </html>
+      `;
+  
+      const { uri } = await Print.printToFileAsync({ html });
+  
+      console.log('PDF URI:', uri); // 👉 Teste: veja no terminal se o arquivo é gerado
+  
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Compartilhar PDF',
+        });
+      } else {
+        Alert.alert('Compartilhamento não disponível neste dispositivo');
+      }
+  
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+      console.error('Erro ao gerar PDF:', error);
+    }
+  };  
 
   return (
     <SafeAreaView style={styles.container}>
