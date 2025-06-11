@@ -1,12 +1,12 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 const Botao = () => {
   const navigation = useNavigation();
 
   return (
-    <View style={styles.botaoContainer}>
+    <SafeAreaView style={styles.botaoContainer}>
       <TouchableOpacity style={styles.botao} onPress={() => navigation.navigate('Home')}>
         <Text style={styles.texto}>Home</Text>
       </TouchableOpacity>
@@ -22,7 +22,7 @@ const Botao = () => {
       <TouchableOpacity style={styles.botao} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.texto}>Sair</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 

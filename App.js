@@ -37,7 +37,6 @@ export default function App() {
           {/* <Stack.Screen name="Perfil" component={PerfilScreen} />
           <Stack.Screen name="Configurações" component={ConfiguracoesScreen} />
           <Stack.Screen name="Login" component={LoginScreen} /> */}
-
         </Stack.Navigator>
         <Footer />
       </SafeAreaView>

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, Button } from 'react-native';
 import styles from './glasgow_style'; // ✅ Importando os estilos
 import { Picker } from '@react-native-picker/picker';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import Share from 'react-native-share';
+import { Alert } from 'react-native';
 
 
 export default function GlasgowComaScaleApp( navigation ) {
@@ -23,7 +26,38 @@ const totalScore = baseScore + Number(pupilResponse);
     if (totalScore <= 15) return '🟢 Comprometimento LEVE';
     return '❓ Fora da escala';
   };
-
+       
+  const generatePDF = async () => {
+    try {
+      const html = `
+        <html>
+          <body>
+            <h1>Escala de Coma de Glasgow</h1>
+            <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+            <h2>Resultados</h2>
+            <p><strong>Abertura Ocular (E):</strong> ${eyeResponse}</p>
+            <p><strong>Resposta Verbal (V):</strong> ${verbalResponse}</p>
+            <p><strong>Resposta Motora (M):</strong> ${motorResponse}</p>
+            <p><strong>Resposta Pupilar (P):</strong> ${pupilResponse}</p>
+            <p><strong>Score Total:</strong> ${totalScore}</p>
+            <p><strong>Interpretação:</strong> ${getInterpretation()}</p>
+          </body>
+        </html>
+      `;
+  
+      const { uri } = await Print.printToFileAsync({ html });
+  
+      await Sharing.shareAsync(uri, {
+        mimeType: 'application/pdf',
+        dialogTitle: 'Compartilhar PDF',
+      });
+  
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+      console.error(error);
+    }
+  };
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.title}>Escala de Coma de Glasgow (Revisada 2018)</Text>
@@ -112,6 +146,15 @@ const totalScore = baseScore + Number(pupilResponse);
         <Text style={styles.interpretationText}>
           {getInterpretation()}
         </Text>
+      </View>
+
+      {/* Botão para gerar PDF */}
+      <View style={{ marginTop: 20, padding: 10 }}>
+        <Button 
+          title="Gerar PDF e Compartilhar" 
+          onPress={generatePDF} 
+          color="#4CAF50"
+        />
       </View>
 
       {/* Legenda */}
