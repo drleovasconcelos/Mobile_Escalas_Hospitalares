@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, Button } from 'react-native';
 import styles from './glasgow_style'; // ✅ Importando os estilos
 import { Picker } from '@react-native-picker/picker';
-import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import Share from 'react-native-share';
 import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 
 
 export default function GlasgowComaScaleApp( navigation ) {
@@ -21,9 +21,9 @@ const totalScore = baseScore + Number(pupilResponse);
 
   // Interpretação
   const getInterpretation = () => {
-    if (totalScore <= 8) return '🔴 Comprometimento GRAVE';
-    if (totalScore <= 12) return '🟠 Comprometimento MODERADO';
-    if (totalScore <= 15) return '🟢 Comprometimento LEVE';
+    if (totalScore <= 8) return '🔴 Comprometimento CEREBRAL GRAVE';
+    if (totalScore <= 12) return '🟠 Comprometimento CEREBRAL MODERADO';
+    if (totalScore <= 15) return '🟢 Comprometimento CEREBRAL LEVE';
     return '❓ Fora da escala';
   };
        
@@ -47,16 +47,22 @@ const totalScore = baseScore + Number(pupilResponse);
   
       const { uri } = await Print.printToFileAsync({ html });
   
-      await Sharing.shareAsync(uri, {
-        mimeType: 'application/pdf',
-        dialogTitle: 'Compartilhar PDF',
-      });
+      console.log('PDF URI:', uri); // 👉 Teste: veja no terminal se o arquivo é gerado
+  
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Compartilhar PDF',
+        });
+      } else {
+        Alert.alert('Compartilhamento não disponível neste dispositivo');
+      }
   
     } catch (error) {
       Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
-      console.error(error);
+      console.error('Erro ao gerar PDF:', error);
     }
-  };
+  };  
   
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -161,9 +167,23 @@ const totalScore = baseScore + Number(pupilResponse);
       <View style={styles.infoBox}>
         <Text style={styles.infoTitle}>📌 Classificação:</Text>
         <Text style={styles.infoText}>
-          • 3-8: Comprometimento GRAVE{'\n'}
-          • 9-12: Comprometimento MODERADO{'\n'}
-          • 13-15: Comprometimento LEVE
+          • 3-8: Comprometimento CEREBRAL GRAVE{'\n'}
+          • 9-12: Comprometimento CEREBRAL MODERADO{'\n'}
+          • 13-15: Comprometimento CEREBRAL LEVE
+        </Text>
+      </View>
+      {/* Instruções do Teste */}
+      <View style={[styles.infoBox, { marginBottom: 30 }]}>
+        <Text style={styles.infoTitle}>📖 Instruções para Aplicação do Teste:</Text>
+        <Text style={styles.infoText}>
+          • A **Escala de Coma de Glasgow (ECG)** avalia o nível de consciência de um paciente com base em três respostas: ocular, verbal e motora.{'\n\n'}
+          • A pontuação total varia de **3 a 15**, sendo que pontuações mais baixas indicam maior comprometimento neurológico.{'\n\n'}
+          • A **resposta pupilar** revisada (2018) é usada para subtrair pontos da pontuação total, aumentando a precisão na avaliação de pacientes com lesões cerebrais.{'\n\n'}
+          • Para aplicar o teste:{'\n'}
+          → Avalie e selecione a melhor resposta do paciente para cada categoria (E, V, M).{'\n'}
+          → Observe a reatividade pupilar (P).{'\n'}
+          → O sistema calculará o score automaticamente.{'\n\n'}
+          • **Importante:** Use este teste como ferramenta complementar, sempre com julgamento clínico e em conjunto com outros dados do paciente.
         </Text>
       </View>
     </ScrollView>
