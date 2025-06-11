@@ -1,13 +1,11 @@
 import styles from './avpu_style'
-
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
+import {  View, Text, SafeAreaView, ScrollView, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+
 
 export default function AVPUScaleApp() {
   const [avpuLevel, setAvpuLevel] = useState('');
@@ -26,6 +24,41 @@ export default function AVPUScaleApp() {
         return 'Selecione um nível da escala AVPU.';
     }
   };
+
+  
+    const generatePDF = async () => {
+      try {
+        const html = `
+          <html>
+            <body>
+              <h1>escala AVPU (Alerta, Verbal, Dor, Sem Resposta)</h1>
+              <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+              <h2>Resultados</h2>
+              <p><strong>Resultado:</strong> ${avpuLevel}</p>
+              <p><strong>Interpretação:</strong> ${getInterpretation()}</p>
+            </body>
+          </html>
+        `;
+    
+        const { uri } = await Print.printToFileAsync({ html });
+    
+        console.log('PDF URI:', uri);
+    
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(uri, {
+            mimeType: 'application/pdf',
+            dialogTitle: 'Compartilhar PDF',
+          });
+        } else {
+          Alert.alert('Compartilhamento não disponível neste dispositivo');
+        }
+    
+      } catch (error) {
+        Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+        console.error('Erro ao gerar PDF:', error);
+      }
+    };  
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -59,6 +92,15 @@ export default function AVPUScaleApp() {
           <Text style={styles.infoText}>2. Chame pelo nome e observe a resposta.</Text>
           <Text style={styles.infoText}>3. Se não responder, aplique estímulo doloroso (como pressão no trapézio).</Text>
           <Text style={styles.infoText}>4. Se não houver resposta, classifique como "U".</Text>
+        </View>
+
+        {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
         </View>
 
         <View>

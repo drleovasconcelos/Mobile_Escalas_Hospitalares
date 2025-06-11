@@ -172,6 +172,7 @@ const totalScore = baseScore + Number(pupilResponse);
           • 13-15: Comprometimento CEREBRAL LEVE
         </Text>
       </View>
+      
       {/* Instruções do Teste */}
       <View style={[styles.infoBox, { marginBottom: 30 }]}>
         <Text style={styles.infoTitle}>📖 Instruções para Aplicação do Teste:</Text>

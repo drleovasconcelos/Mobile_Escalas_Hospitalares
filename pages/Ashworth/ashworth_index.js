@@ -1,6 +1,10 @@
 import React, { useState } from 'react'; // Importa React e o hook useState para gerenciar o estado
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native'; // Importa componentes básicos do React Native
+import { View, Text, ScrollView, Button, SafeAreaView, TouchableOpacity } from 'react-native'; // Importa componentes básicos do React Native
 import styles from './ashwort_style'; // Importa o arquivo de estilos externo para aplicar no layout
+import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+
 
 export default function AshworthScale() {
   // Cria um estado para armazenar o item selecionado pelo usuário
@@ -15,6 +19,39 @@ export default function AshworthScale() {
     { id: 4, label: "3 - Movimento difícil por aumento do tônus" },
     { id: 5, label: "4 - Rigidez total da parte examinada" },
   ];
+
+  
+    const generatePDF = async () => {
+      try {
+        const html = `
+          <html>
+            <body>
+              <h1>Escala de Ashwort</h1>
+              <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+              <h2>Resultados</h2>
+              <p><strong>Resultado da Escala:</strong> ${options[selectedValue].label}</p>
+            </body>
+          </html>
+        `;
+    
+        const { uri } = await Print.printToFileAsync({ html });
+    
+        console.log('PDF URI:', uri); // 👉 Teste: veja no terminal se o arquivo é gerado
+    
+        if (await Sharing.isAvailableAsync()) {
+          await Sharing.shareAsync(uri, {
+            mimeType: 'application/pdf',
+            dialogTitle: 'Compartilhar PDF',
+          });
+        } else {
+          Alert.alert('Compartilhamento não disponível neste dispositivo');
+        }
+    
+      } catch (error) {
+        Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+        console.error('Erro ao gerar PDF:', error);
+      }
+    };  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,6 +81,16 @@ export default function AshworthScale() {
           <Text style={styles.result}>Você selecionou: {options[selectedValue].label}</Text>
         )}
       </View>
+
+      {/* Botão para gerar PDF */}
+      <View style={{ marginTop: 20, padding: 10 }}>
+        <Button 
+          title="Gerar PDF e Compartilhar" 
+          onPress={generatePDF} 
+          color="#4CAF50"
+        />
+      </View>
+      
       <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
           <Text style={styles.infoText}>

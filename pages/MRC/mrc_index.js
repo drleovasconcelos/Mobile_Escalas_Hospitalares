@@ -61,8 +61,8 @@ export default function MRCScaleApp() {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <Text style={styles.title}>Escala de MRC</Text>
 
         {/* Flexão de Ombro */}
@@ -377,6 +377,8 @@ export default function MRCScaleApp() {
           <Text style={styles.interpretationText}>{getInterpretation()}</Text>
         </View>
 
+       
+
         <View>
         <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
         <Text style={styles.infoText}>
@@ -393,8 +395,8 @@ export default function MRCScaleApp() {
         </Text>
       </View>
 
-      </SafeAreaView>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

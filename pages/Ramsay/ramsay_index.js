@@ -66,6 +66,15 @@ export default function RamsayScaleApp() {
           <Text style={styles.infoText}>4. Se ainda sem resposta, aplicar estímulo doloroso leve.</Text>
         </View>
 
+        {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
+        </View>
+
         <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>Informações do Teste:</Text>
           <Text style={styles.infoText1}>A escala de Ramsay é um método clínico utilizado para medir o grau de sedação em pacientes, sendo especialmente aplicado em     unidades de terapia intensiva (UTI). A avaliação segue uma classificação de 1 a 6, onde 1 indica um estado de alerta completo e 6 corresponde à ausência de resposta. Por ser baseada na análise do comportamento e na reação do paciente a estímulos, trata-se de um instrumento subjetivo, mas amplamente utilizado na prática médica..</Text>

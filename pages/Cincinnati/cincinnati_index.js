@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  ScrollView,
-} from 'react-native';
 import styles from "./cincinnati_style"
+import React, { useState } from 'react';
+import {  View,  Text,  SafeAreaView,  ScrollView, Button } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+
 
 export default function CincinnatiScaleApp() {
   const [face, setFace] = useState('normal');
@@ -19,6 +18,43 @@ export default function CincinnatiScaleApp() {
     if (isAbnormal) return '🔴 Suspeita de AVC - Encaminhar imediatamente!';
     return '🟢 Sem sinais de AVC detectados.';
   };
+
+  
+  const generatePDF = async () => {
+    try {
+      const html = `
+        <html>
+          <body>
+            <h1>Escala de CAM-ICU</h1>
+            <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+            <h2>Resultados</h2>
+            <p><strong>Paralisia Facial:</strong> ${face}</p>
+            <p><strong>Fraqueza em um dos braços:</strong> ${arm}</p>
+            <p><strong>Alteração da Fala:</strong> ${speech}</p>
+            <p><strong>Interpretação:</strong> ${getResult()}</p>
+          </body>
+        </html>
+      `;
+  
+      const { uri } = await Print.printToFileAsync({ html });
+  
+      console.log('PDF URI:', uri);
+  
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Compartilhar PDF',
+        });
+      } else {
+        Alert.alert('Compartilhamento não disponível neste dispositivo');
+      }
+  
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+      console.error('Erro ao gerar PDF:', error);
+    }
+  };  
+    
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -37,7 +73,7 @@ export default function CincinnatiScaleApp() {
           <Text style={styles.sectionTitle}>2. Fraqueza em um dos Braços</Text>
           <Picker selectedValue={arm} onValueChange={(v) => setArm(v)} style={styles.picker}>
             <Picker.Item label="Normal" value="normal" />
-            <Picker.Item label="Anormal" value="abnormal" />
+            <Picker.Item label="Anormal" value="anormal" />
           </Picker>
         </View>
 
@@ -48,6 +84,16 @@ export default function CincinnatiScaleApp() {
             <Picker.Item label="Anormal" value="abnormal" />
           </Picker>
         </View>
+
+        {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
+        </View>
+
 
         <View style={styles.resultContainer}>
           <Text style={styles.resultText}>{getResult()}</Text>

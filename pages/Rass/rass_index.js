@@ -68,6 +68,15 @@ export default function RASSScaleApp() {
           <Text style={styles.infoText}>4. Se não responde, estimulo doloroso</Text>
         </View>
 
+        {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
+        </View>
+        
         <View>
           <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
           <Text style={styles.infoText1}>

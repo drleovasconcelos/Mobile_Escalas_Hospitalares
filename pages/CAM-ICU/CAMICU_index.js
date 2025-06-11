@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
 import styles from "./CAMICU_style"
+import React, { useState } from 'react';
+import {   View,  Text,  ScrollView,  SafeAreaView, Button} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-
+import { Alert } from 'react-native';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 
 export default function CAMICUScaleApp() {
   // Flexao de Tornozelo
@@ -43,6 +40,45 @@ export default function CAMICUScaleApp() {
 
     return '❓ Fora da escala';
   };
+
+  
+    
+  const generatePDF = async () => {
+    try {
+      const html = `
+        <html>
+          <body>
+            <h1>Escala de CAM-ICU</h1>
+            <p><strong>Data:</strong> ${new Date().toLocaleDateString()}</p>
+            <h2>Resultados</h2>
+            <p><strong>O paciente teve flutuação do estado mental nas últimas 24 horas?:</strong> ${inicioAgudo}</p>
+            <p><strong>Quantidade de erros apresentados pelos pacientes após Leitura de Letras Específicas:</strong> ${inatencao}</p>
+            <p><strong>Qual o Estado Atual Na escala de RASS (Richmond Agitation-Sedation Scale) do paciente:</strong> ${rassscore}</p>
+            <p><strong>Quantidade de erros após perguntas realizadas ao paciente:</strong> ${pensamentodesorganizado}</p>
+            <p><strong>Interpretação:</strong> ${getInterpretation()}</p>
+          </body>
+        </html>
+      `;
+  
+      const { uri } = await Print.printToFileAsync({ html });
+  
+      console.log('PDF URI:', uri);
+  
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(uri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Compartilhar PDF',
+        });
+      } else {
+        Alert.alert('Compartilhamento não disponível neste dispositivo');
+      }
+  
+    } catch (error) {
+      Alert.alert('Erro', 'Falha ao gerar ou compartilhar o PDF.');
+      console.error('Erro ao gerar PDF:', error);
+    }
+  };  
+  
 
   return (
     <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -89,8 +125,7 @@ export default function CAMICUScaleApp() {
         {/* Nivel de Consciência Alterado */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>
-            Qual o Estado Atual Na escala de RASS (Richmond Agitation-Sedation
-            Scale) do paciente
+            Qual o Estado Atual Na escala de RASS (Richmond Agitation-Sedation Scale) do paciente.
           </Text>
           <Picker
             selectedValue={rassscore}
@@ -149,19 +184,27 @@ export default function CAMICUScaleApp() {
           <Text style={styles.interpretationText}>{getInterpretation()}</Text>
         </View>
 
+        {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
+        </View>
+
         <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
           <Text style={styles.infoText}>
             A Escala CAM-ICU é um método utilizado para identificar delirium em pacientes internados em Unidades de Terapia Intensiva (UTI). Ela permite uma avaliação rápida e objetiva do estado mental, sendo especialmente útil para pacientes sob ventilação mecânica.{"\n"}
-Como funciona?{"\n"}
-A escala é baseada em quatro critérios: {"\n"}
-1. Alteração aguda do estado mental – Mudança súbita na cognição do paciente.{"\n"}
-2. Déficit de atenção – Dificuldade em manter o foco em estímulos simples.{"\n"}
-3. Nível de consciência – Avaliação pela Escala RASS (Richmond Agitation-Sedation Scale).{"\n"}
-4. Pensamento desorganizado – Respostas incoerentes ou dificuldade em seguir comandos.{"\n"}
-Importância:{"\n"}
-A CAM-ICU é essencial para o diagnóstico precoce do delirium, permitindo intervenções rápidas e reduzindo complicações associadas à condição. Seu uso melhora o prognóstico e a qualidade do cuidado em pacientes críticos.
-
+            Como funciona?{"\n"}
+            A escala é baseada em quatro critérios: {"\n"}
+            1. Alteração aguda do estado mental – Mudança súbita na cognição do paciente.{"\n"}
+            2. Déficit de atenção – Dificuldade em manter o foco em estímulos simples.{"\n"}
+            3. Nível de consciência – Avaliação pela Escala RASS (Richmond Agitation-Sedation Scale).{"\n"}
+            4. Pensamento desorganizado – Respostas incoerentes ou dificuldade em seguir comandos.{"\n"}
+            Importância:{"\n"}
+            A CAM-ICU é essencial para o diagnóstico precoce do delirium, permitindo intervenções rápidas e reduzindo complicações associadas à condição. Seu uso melhora o prognóstico e a qualidade do cuidado em pacientes críticos.
           </Text>
         </View>
       </SafeAreaView>

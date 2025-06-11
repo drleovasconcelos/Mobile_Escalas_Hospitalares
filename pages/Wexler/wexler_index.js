@@ -53,6 +53,15 @@ export default function WexlerScaleApp() {
           )}
         </View>
 
+        {/* Botão para gerar PDF */}
+        <View style={{ marginTop: 20, padding: 10 }}>
+          <Button 
+            title="Gerar PDF e Compartilhar" 
+            onPress={generatePDF} 
+            color="#4CAF50"
+          />
+        </View>
+
         {/* Seção de informações separada */}
         <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>Informações sobre o Teste</Text>

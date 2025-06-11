@@ -4,7 +4,7 @@ import Imagem from './imagem'; // Certifique-se de que o nome do arquivo está c
 export default function Header() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Leonardo Freire</Text>
+      <Text style={styles.text}>Paciente: 0001</Text>
       <Imagem />
     </View>
   );
