@@ -1,12 +1,12 @@
-import { View, StyleSheet, Text } from 'react-native'; // ✅ Correto
+import { SafeAreaView, StyleSheet, Text } from 'react-native'; // ✅ Correto
 import Button from './button';
 
 export default function Footer() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.text}></Text>
       <Button />
-    </View>
+    </SafeAreaView>
   );
 }
 

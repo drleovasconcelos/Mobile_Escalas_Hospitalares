@@ -103,7 +103,7 @@ export default function AVPUScaleApp() {
           />
         </View>
 
-        <View>
+        <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>Informações sobre o Teste</Text>
           <Text style={styles.infoText1}>
              Escala AVPU avalia rapidamente o nível de consciência de um paciente, classificando-o em quatro categorias: Alerta (responde normalmente), Resposta verbal (reage apenas a estímulos sonoros), Resposta à dor (responde apenas a estímulos dolorosos) e Inconsciente (sem reação a qualquer estímulo). Essa escala é essencial para identificar alterações neurológicas e orientar decisões médicas em emergências.

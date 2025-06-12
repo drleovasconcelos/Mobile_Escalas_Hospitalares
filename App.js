@@ -38,7 +38,7 @@ export default function App() {
           <Stack.Screen name="Configurações" component={ConfiguracoesScreen} />
           <Stack.Screen name="Login" component={LoginScreen} /> */}
         </Stack.Navigator>
-        <Footer />
+        <Footer/>
       </SafeAreaView>
     </NavigationContainer>
   );

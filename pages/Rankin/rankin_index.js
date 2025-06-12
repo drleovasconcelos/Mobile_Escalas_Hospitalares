@@ -107,10 +107,10 @@ export default function RankinScaleApp() {
         <View style={styles.infoSection}>
           <Text style={styles.infoTitle}>Sobre a escala:</Text>
           <Text style={styles.infoText}>• A Escala de Rankin é um sistema utilizado para medir o grau de incapacidade funcional de um paciente, sendo amplamente empregada na avaliação de pessoas que sofreram um Acidente Vascular Cerebral (AVC). Seu objetivo é classificar o impacto da condição na autonomia do indivíduo, ajudando na definição de estratégias de reabilitação.
-</Text>
+          </Text>
           <Text style={styles.infoText}>• Vai de 0 (sem sintomas) até 6 (óbito).</Text>
           <Text style={styles.infoText}>• Essa ferramenta é essencial para avaliar a evolução do paciente após um AVC e orientar decisões médicas sobre reabilitação e suporte necessário. Além disso, é amplamente utilizada em pesquisas clínicas para medir a eficácia de tratamentos.
-</Text>
+          </Text>
         </View>
       </SafeAreaView>
     </ScrollView>

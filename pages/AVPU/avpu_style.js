@@ -63,11 +63,13 @@ const styles = StyleSheet.create({
       color: '#2c3e50',
     },
     infoSection: {
-      marginTop: 20,
-      padding: 15,
-      backgroundColor: '#e3f2fd',
-      borderRadius: 8,
-      marginBottom: 10,  // Mantive marginBottom da segunda definição
+    width: "100%",
+    backgroundColor: "#e3f2fd",
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 10,
+    elevation: 3, 
+    marginBottom: 10   // Mantive marginBottom da segunda definição
     },
     infoTitle: {
       fontSize: 16,

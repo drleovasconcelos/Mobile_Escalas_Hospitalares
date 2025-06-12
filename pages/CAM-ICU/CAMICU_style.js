@@ -66,23 +66,23 @@ const styles = StyleSheet.create({
     color: '#34495e',
   },
   infoSection: {
-    width: '100%',
-    backgroundColor: '#ffffff',
+    width: "100%",
+    backgroundColor: "#e3f2fd",
     padding: 15,
-    borderRadius: 10,
-    marginTop: 30,
-    elevation: 3,
-    marginBottom: 80, // Ajustado para evitar grandes espaçamentos no final
+    borderRadius: 8,
+    marginTop: 20,
+    elevation: 3, 
+    marginBottom: 140 // Ajustado para evitar grandes espaçamentos no final
   },
   infoTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
     textAlign: 'center',
     color: '#2c3e50',
   },
   infoText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'justify',
     color: '#34495e',
     lineHeight: 22,

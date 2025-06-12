@@ -33,21 +33,21 @@ const styles = StyleSheet.create({
     color: "#333" },
   infoSection: {
     width: "100%",
-    backgroundColor: "#fff",
-    padding: 25,
-    borderRadius: 10,
-    marginTop: 30,
+    backgroundColor: "#e3f2fd",
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 20,
     elevation: 3, 
     marginBottom: 100
   },
   infoTitle: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 10,
     textAlign: "center",
   },
   infoText: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: "justify",
   }, 
   scrollContainer: {
